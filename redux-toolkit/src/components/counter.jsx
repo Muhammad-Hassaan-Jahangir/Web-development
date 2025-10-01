@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useSelector,useDispatch } from 'react-redux'
-import { increment,decrement,reset, incrementByAmount } from '../features/counter/counterSlice'
+import { increment, decrement, reset, incrementByAmount, incrementAsync } from '../features/counter/counterSlice'
 function Counter() {
-  const [amount,setAmount] = useState(0);
+  const [amount, setAmount] = useState(0);
+  const [loading, setLoading] = useState(false);
   const count = useSelector((state) => state.counter.value);
   const dispatch = useDispatch();
 
@@ -17,6 +18,11 @@ function Counter() {
   }
   function handleIncrementByAmount() {
     dispatch(incrementByAmount(amount))
+  }
+  async function handleAsyncIncrement() {
+    setLoading(true);
+    await dispatch(incrementAsync(amount));
+    setLoading(false);
   }
 
   return (
@@ -64,6 +70,13 @@ function Counter() {
             className="px-5 py-3 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-xl shadow-md hover:scale-105 hover:from-blue-500 hover:to-blue-700 transition-transform duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300 font-semibold"
           >
             Increase by Amount
+          </button>
+          <button
+            onClick={handleAsyncIncrement}
+            disabled={loading}
+            className={`px-5 py-3 bg-gradient-to-r from-pink-400 to-indigo-500 text-white rounded-xl shadow-md hover:scale-105 transition-transform duration-200 focus:outline-none focus:ring-4 focus:ring-pink-300 font-semibold ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}
+          >
+            {loading ? 'Increasing (Async)...' : 'Increase by Amount (Async)'}
           </button>
         </div>
       </div>
